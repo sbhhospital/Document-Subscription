@@ -20,6 +20,10 @@ interface DocumentEntry {
   file: File | null;
   fileName: string;
   fileContent?: string;
+  issueDate: string;
+  concernPersonName: string;
+  concernPersonMobile: string;
+  concernPersonDepartment: string;
 }
 
 interface AddDocumentProps {
@@ -47,6 +51,10 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
       renewalDate: "",
       file: null,
       fileName: "",
+      issueDate: "",
+      concernPersonName: "",
+      concernPersonMobile: "",
+      concernPersonDepartment: "",
     },
   ]);
 
@@ -141,6 +149,10 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
         renewalDate: "",
         file: null,
         fileName: "",
+        issueDate: "",
+        concernPersonName: "",
+        concernPersonMobile: "",
+        concernPersonDepartment: "",
       },
     ]);
   };
@@ -284,9 +296,17 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
             ? entry.renewalDate // Send YYYY-MM-DD directly to avoid locale confusion
             : "",
           Image: fileUrl || "",
+          issueDate: entry.issueDate || "", // Col M
+          concernPersonName: entry.concernPersonName || "", // Col N
+          concernPersonMobile: entry.concernPersonMobile || "", // Col O
+          concernPersonDepartment: entry.concernPersonDepartment || "", // Col P
         };
 
         // 3. Submit Document
+        // Columns: 
+        // A: Timestamp, B: SN, C: Doc Name, D: Doc Type, E: Category, F: Name, G: Need Renewal, H: Renewal Date, I: Image
+        // J: Status (Default Active), K: Planned1 (Empty), L: Actual1 (Empty)
+        // M: Issue Date, N: Concern Name, O: Concern Mobile, P: Concern Dept
         await submitToGoogleSheets({
           action: "insert",
           sheetName: "Documents",
@@ -300,6 +320,13 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
             sheetData["Need Renewal"],
             sheetData["Renewal Date"],
             sheetData.Image,
+            "Active", // J
+            "",       // K
+            "",       // L
+            sheetData.issueDate,            // M
+            sheetData.concernPersonName,    // N
+            sheetData.concernPersonMobile,  // O
+            sheetData.concernPersonDepartment // P
           ],
         });
 
@@ -317,6 +344,10 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
           fileContent: entry.fileContent,
           date: new Date().toISOString().split("T")[0],
           status: "Active",
+          issueDate: entry.issueDate,
+          concernPersonName: entry.concernPersonName,
+          concernPersonMobile: entry.concernPersonMobile,
+          concernPersonDepartment: entry.concernPersonDepartment,
         });
       }
       addDocuments(newDocuments);
@@ -334,6 +365,10 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
           renewalDate: "",
           file: null,
           fileName: "",
+          issueDate: "",
+          concernPersonName: "",
+          concernPersonMobile: "",
+          concernPersonDepartment: "",
         },
       ]);
     } catch (error) {
@@ -497,7 +532,70 @@ const AddDocument: React.FC<AddDocumentProps> = ({ isOpen, onClose }) => {
                     )}
                   </div>
 
-                  {/* 6. File Upload */}
+                  {/* 6. Issue Date */}
+                  <div>
+                    <label className="block mb-1 text-xs font-semibold text-gray-600">
+                      Issue Date
+                    </label>
+                    <input
+                      type="date"
+                      className="p-2 w-full text-xs font-medium rounded-lg border-none transition-colors outline-none shadow-input focus:ring-1 focus:ring-indigo-500 bg-gray-50/50 focus:bg-white"
+                      value={entry.issueDate}
+                      onChange={(e) =>
+                        handleChange(entry.id, "issueDate", e.target.value)
+                      }
+                    />
+                  </div>
+
+                  {/* 7. Concern Person Name */}
+                  <div>
+                    <label className="block mb-1 text-xs font-semibold text-gray-600">
+                      Concern Person Name
+                    </label>
+                    <input
+                      type="text"
+                      className="p-2 w-full text-xs font-medium rounded-lg border-none transition-colors outline-none shadow-input focus:ring-1 focus:ring-indigo-500 bg-gray-50/50 focus:bg-white"
+                      value={entry.concernPersonName}
+                      onChange={(e) =>
+                        handleChange(entry.id, "concernPersonName", e.target.value)
+                      }
+                      placeholder="Name"
+                    />
+                  </div>
+
+                  {/* 8. Concern Person Mobile */}
+                  <div>
+                    <label className="block mb-1 text-xs font-semibold text-gray-600">
+                      Concern Person Mobile
+                    </label>
+                    <input
+                      type="text"
+                      className="p-2 w-full text-xs font-medium rounded-lg border-none transition-colors outline-none shadow-input focus:ring-1 focus:ring-indigo-500 bg-gray-50/50 focus:bg-white"
+                      value={entry.concernPersonMobile}
+                      onChange={(e) =>
+                        handleChange(entry.id, "concernPersonMobile", e.target.value)
+                      }
+                      placeholder="Mobile"
+                    />
+                  </div>
+
+                  {/* 9. Concern Person Department */}
+                  <div>
+                    <label className="block mb-1 text-xs font-semibold text-gray-600">
+                      Concern Person Dept
+                    </label>
+                    <input
+                      type="text"
+                      className="p-2 w-full text-xs font-medium rounded-lg border-none transition-colors outline-none shadow-input focus:ring-1 focus:ring-indigo-500 bg-gray-50/50 focus:bg-white"
+                      value={entry.concernPersonDepartment}
+                      onChange={(e) =>
+                        handleChange(entry.id, "concernPersonDepartment", e.target.value)
+                      }
+                      placeholder="Department"
+                    />
+                  </div>
+
+                  {/* 10. File Upload */}
                   <div>
                     <div className="relative">
                       <label className="block mb-1 text-xs font-semibold text-gray-600">

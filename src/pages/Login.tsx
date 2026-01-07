@@ -96,8 +96,8 @@ const Login = () => {
           <div className="text-center">
             <div className="flex justify-center mb-4">
               <div className="relative">
-                <div className="h-40 w-40 flex items-center justify-center transform transition-all duration-300 hover:scale-105">
-                  <img src="/Logo.jpeg" alt="Logo" className="h-full w-full object-cover rounded-full shadow-md" />
+                <div className="h-40 w-40 flex items-center justify-center rounded-full bg-white shadow-md overflow-hidden transform transition-all duration-300 hover:scale-105">
+                  <img src="/SBH logo 1.png" alt="Logo" className="h-full w-full object-contain" />
                 </div>
               </div>
             </div>

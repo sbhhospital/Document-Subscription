@@ -252,6 +252,10 @@ export const fetchDocumentsFromGoogleSheets = async (): Promise<DocumentItem[]> 
           rowIndex: rowIndex,
           planned1: (r?.[10] || "").toString().trim(), // Column K is index 10
           actual1: (r?.[11] || "").toString().trim(), // Column L is index 11
+          issueDate: (r?.[12] || "").toString().trim(), // Column M is index 12
+          concernPersonName: (r?.[13] || "").toString().trim(), // Column N is index 13
+          concernPersonMobile: (r?.[14] || "").toString().trim(), // Column O is index 14
+          concernPersonDepartment: (r?.[15] || "").toString().trim(), // Column P is index 15
         };
       })
       .filter(

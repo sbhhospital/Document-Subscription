@@ -17,6 +17,10 @@ export interface DocumentItem {
   rowIndex?: number; // Row index in Google Sheet (1-based or 0-based depending on usage)
   planned1?: string; // Column K from Google Sheet
   actual1?: string; // Column L from Google Sheet
+  issueDate?: string; // Column M
+  concernPersonName?: string; // Column N
+  concernPersonMobile?: string; // Column O
+  concernPersonDepartment?: string; // Column P
 }
 
 export interface SubscriptionItem {
@@ -128,6 +132,10 @@ export interface RenewalItem {
   newFile: string | null; // "New Document file"
   newFileContent?: string;
   oldFileContent?: string;
+  issueDate?: string;
+  concernPersonName?: string;
+  concernPersonMobile?: string;
+  concernPersonDepartment?: string;
 }
 
 export interface SubscriptionRenewalItem {

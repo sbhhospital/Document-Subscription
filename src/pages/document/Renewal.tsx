@@ -68,7 +68,11 @@ const DocumentRenewal = () => {
                         documentType: matchingDoc.documentType,
                         category: matchingDoc.category,
                         companyName: matchingDoc.companyName,
-                        documentId: matchingDoc.id
+                        documentId: matchingDoc.id,
+                        issueDate: matchingDoc.issueDate,
+                        concernPersonName: matchingDoc.concernPersonName,
+                        concernPersonMobile: matchingDoc.concernPersonMobile,
+                        concernPersonDepartment: matchingDoc.concernPersonDepartment
                     };
                 }
                 return historyItem;
@@ -488,6 +492,10 @@ const DocumentRenewal = () => {
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Document Type</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Category</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Name</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Issue Date</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Name</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Mobile</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Dept</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Entry Date</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Renewal</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Document File</th>
@@ -514,6 +522,10 @@ const DocumentRenewal = () => {
                                             </span>
                                         </td>
                                         <td className="p-3 text-gray-900">{doc.companyName}</td>
+                                        <td className="p-3 text-gray-500 font-mono text-xs">{formatDate(doc.issueDate)}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{doc.concernPersonName || '-'}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{doc.concernPersonMobile || '-'}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{doc.concernPersonDepartment || '-'}</td>
                                         <td className="p-3 text-gray-500 font-mono text-xs">{formatDate(doc.date)}</td>
                                         <td className="p-3 text-center">
                                             <span className="inline-flex items-center justify-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded text-xs font-medium">
@@ -536,7 +548,7 @@ const DocumentRenewal = () => {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={9} className="p-12 text-center">
+                                        <td colSpan={13} className="p-12 text-center">
                                             <div className="flex flex-col items-center justify-center p-8 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100">
                                                 <div className="h-16 w-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-4">
                                                     <Check size={32} />
@@ -560,6 +572,10 @@ const DocumentRenewal = () => {
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Document Type</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Category</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Name</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Issue Date</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Name</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Mobile</th>
+                                    <th className="p-3 whitespace-nowrap bg-gray-50">Concern Dept</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Entry Date</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Renewal</th>
                                     <th className="p-3 whitespace-nowrap bg-gray-50">Document File</th>
@@ -580,6 +596,10 @@ const DocumentRenewal = () => {
                                             </span>
                                         </td>
                                         <td className="p-3 text-gray-900">{item.companyName}</td>
+                                        <td className="p-3 text-gray-500 font-mono text-xs">{formatDate(item.issueDate)}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{item.concernPersonName || '-'}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{item.concernPersonMobile || '-'}</td>
+                                        <td className="p-3 text-gray-500 text-xs">{item.concernPersonDepartment || '-'}</td>
                                         <td className="p-3 text-gray-500 font-mono text-xs">{formatDate(item.entryDate)}</td>
                                         <td className="p-3 text-gray-500 font-mono text-xs line-through decoration-red-400">
                                             {formatDate(item.oldRenewalDate)}
@@ -624,7 +644,7 @@ const DocumentRenewal = () => {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={11} className="p-12 text-center text-gray-500">
+                                        <td colSpan={15} className="p-12 text-center text-gray-500">
                                             <p>No renewal history available</p>
                                         </td>
                                     </tr>
@@ -726,6 +746,16 @@ const DocumentRenewal = () => {
                                         <span className="font-medium text-indigo-600">{item.nextRenewalDate ? formatDate(item.nextRenewalDate) : '-'}</span>
                                     </div>
                                 </div>
+                                <div className="col-span-2 grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span className="block text-gray-400 text-[10px] uppercase">Issue Date</span>
+                                        <span className="text-gray-700">{formatDate(item.issueDate)}</span>
+                                    </div>
+                                    <div>
+                                        <span className="block text-gray-400 text-[10px] uppercase">Concern</span>
+                                        <span className="text-gray-700">{item.concernPersonName || '-'}</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="pt-3 flex items-center justify-between gap-3 border-t border-gray-50 mt-1">
@@ -760,127 +790,129 @@ const DocumentRenewal = () => {
             </div>
 
             {/* Renewal Modal */}
-            {isRenewalModalOpen && selectedDoc && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
-                        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <div>
-                                <h3 className="text-base font-bold text-gray-800">Process Renewal</h3>
-                                <p className="text-[10px] text-gray-500 mt-0.5">Update renewal status for this document</p>
-                            </div>
-                            <button onClick={handleCloseRenewal} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSaveRenewal} className="p-4 space-y-4">
-                            {/* Pre-filled Info Grid */}
-                            <div className="grid grid-cols-2 gap-3 text-xs bg-blue-50/50 p-3 rounded-xl border border-blue-100/50">
-                                <div className="col-span-2">
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Document</label>
-                                    <div className="font-medium text-gray-900">{selectedDoc.documentName}</div>
-                                </div>
+            {
+                isRenewalModalOpen && selectedDoc && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
+                            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                                 <div>
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Serial No</label>
-                                    <div className="font-mono text-gray-700">{selectedDoc.sn}</div>
+                                    <h3 className="text-base font-bold text-gray-800">Process Renewal</h3>
+                                    <p className="text-[10px] text-gray-500 mt-0.5">Update renewal status for this document</p>
                                 </div>
-                                <div>
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Name</label>
-                                    <div className="text-gray-700">{selectedDoc.companyName}</div>
-                                </div>
-                                <div>
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Category</label>
-                                    <div className="text-gray-700">{selectedDoc.category}</div>
-                                </div>
-                                <div>
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Current Renewal</label>
-                                    <div className="text-amber-600 font-medium">{selectedDoc.renewalDate ? formatDate(selectedDoc.renewalDate) : 'N/A'}</div>
-                                </div>
-                                <div className="col-span-2">
-                                    <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Current File</label>
-                                    {selectedDoc.fileContent ? (
-                                        <div
-                                            onClick={() => handleDownload(selectedDoc.fileContent, selectedDoc.file || 'document')}
-                                            className="text-indigo-600 truncate cursor-pointer hover:underline flex items-center gap-1 font-medium"
-                                            title="Click to view document"
-                                        >
-                                            <FileText size={14} />
-                                            {selectedDoc.file || 'View Document'}
-                                        </div>
-                                    ) : (
-                                        <div className="text-gray-400 italic text-[11px]">No file attached</div>
-                                    )}
-                                </div>
+                                <button onClick={handleCloseRenewal} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
+                                    <X size={18} />
+                                </button>
                             </div>
 
-                            {/* Inputs */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between p-2.5 border border-gray-200 rounded-xl hover:border-indigo-200 transition-colors cursor-pointer" onClick={() => setAgainRenewal(!againRenewal)}>
-                                    <span className="font-medium text-sm text-gray-700">Again Renewal?</span>
-                                    <div className={`w-10 h-5 rounded-full p-0.5 transition-colors duration-300 ${againRenewal ? 'bg-indigo-600' : 'bg-gray-300'}`}>
-                                        <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ${againRenewal ? 'translate-x-5' : 'translate-x-0'}`} />
+                            <form onSubmit={handleSaveRenewal} className="p-4 space-y-4">
+                                {/* Pre-filled Info Grid */}
+                                <div className="grid grid-cols-2 gap-3 text-xs bg-blue-50/50 p-3 rounded-xl border border-blue-100/50">
+                                    <div className="col-span-2">
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Document</label>
+                                        <div className="font-medium text-gray-900">{selectedDoc.documentName}</div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Serial No</label>
+                                        <div className="font-mono text-gray-700">{selectedDoc.sn}</div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Name</label>
+                                        <div className="text-gray-700">{selectedDoc.companyName}</div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Category</label>
+                                        <div className="text-gray-700">{selectedDoc.category}</div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Current Renewal</label>
+                                        <div className="text-amber-600 font-medium">{selectedDoc.renewalDate ? formatDate(selectedDoc.renewalDate) : 'N/A'}</div>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Current File</label>
+                                        {selectedDoc.fileContent ? (
+                                            <div
+                                                onClick={() => handleDownload(selectedDoc.fileContent, selectedDoc.file || 'document')}
+                                                className="text-indigo-600 truncate cursor-pointer hover:underline flex items-center gap-1 font-medium"
+                                                title="Click to view document"
+                                            >
+                                                <FileText size={14} />
+                                                {selectedDoc.file || 'View Document'}
+                                            </div>
+                                        ) : (
+                                            <div className="text-gray-400 italic text-[11px]">No file attached</div>
+                                        )}
                                     </div>
                                 </div>
 
-                                {againRenewal && (
-                                    <div className="space-y-3 animate-fade-in-up">
-                                        <div>
-                                            <label className="block text-xs font-semibold text-gray-700 mb-1">Next Renewal Date</label>
-                                            <div className="relative">
-                                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                                <input
-                                                    type="date"
-                                                    required
-                                                    className="w-full pl-9 p-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                                                    value={nextRenewalDate}
-                                                    onChange={e => setNextRenewalDate(e.target.value)}
-                                                />
+                                {/* Inputs */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-2.5 border border-gray-200 rounded-xl hover:border-indigo-200 transition-colors cursor-pointer" onClick={() => setAgainRenewal(!againRenewal)}>
+                                        <span className="font-medium text-sm text-gray-700">Again Renewal?</span>
+                                        <div className={`w-10 h-5 rounded-full p-0.5 transition-colors duration-300 ${againRenewal ? 'bg-indigo-600' : 'bg-gray-300'}`}>
+                                            <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ${againRenewal ? 'translate-x-5' : 'translate-x-0'}`} />
+                                        </div>
+                                    </div>
+
+                                    {againRenewal && (
+                                        <div className="space-y-3 animate-fade-in-up">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-gray-700 mb-1">Next Renewal Date</label>
+                                                <div className="relative">
+                                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                                                    <input
+                                                        type="date"
+                                                        required
+                                                        className="w-full pl-9 p-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                                                        value={nextRenewalDate}
+                                                        onChange={e => setNextRenewalDate(e.target.value)}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* File Upload - Always Visible & Enabled */}
-                                <div>
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1">New Document File (Optional)</label>
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            id="renewal-file"
-                                            className="hidden"
-                                            onChange={handleFileChange}
-                                        />
-                                        <label
-                                            htmlFor="renewal-file"
-                                            className="flex items-center justify-center gap-2 w-full p-2.5 border border-dashed border-gray-300 rounded-xl text-gray-600 cursor-pointer hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all"
-                                        >
-                                            <Upload size={16} />
-                                            <span className="text-xs font-medium truncate max-w-[180px]">{newFileName || "Upload New Version"}</span>
-                                        </label>
+                                    {/* File Upload - Always Visible & Enabled */}
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-700 mb-1">New Document File (Optional)</label>
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                id="renewal-file"
+                                                className="hidden"
+                                                onChange={handleFileChange}
+                                            />
+                                            <label
+                                                htmlFor="renewal-file"
+                                                className="flex items-center justify-center gap-2 w-full p-2.5 border border-dashed border-gray-300 rounded-xl text-gray-600 cursor-pointer hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all"
+                                            >
+                                                <Upload size={16} />
+                                                <span className="text-xs font-medium truncate max-w-[180px]">{newFileName || "Upload New Version"}</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex gap-3 pt-2">
-                                <button
-                                    type="button"
-                                    onClick={handleCloseRenewal}
-                                    className="flex-1 py-2 px-4 rounded-xl border border-gray-200 text-gray-700 font-medium text-sm hover:bg-gray-50 transition-all"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200"
-                                >
-                                    Save Record
-                                </button>
-                            </div>
-                        </form>
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleCloseRenewal}
+                                        className="flex-1 py-2 px-4 rounded-xl border border-gray-200 text-gray-700 font-medium text-sm hover:bg-gray-50 transition-all"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200"
+                                    >
+                                        Save Record
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

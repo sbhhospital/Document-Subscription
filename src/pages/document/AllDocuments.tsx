@@ -452,7 +452,7 @@ const AllDocuments = () => {
         {!isLoading && !error && (
           <div className="hidden md:flex flex-col bg-white rounded-xl shadow-input overflow-hidden h-[calc(100vh-350px)]">
             <div className="overflow-y-auto flex-1">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-center border-collapse">
                 <thead className="sticky top-0 z-20 bg-gray-50 shadow-sm">
                   <tr className="border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold tracking-wider">
                     <th className="px-3 py-2 w-10 text-center bg-gray-50">
@@ -472,29 +472,41 @@ const AllDocuments = () => {
                     <th className="px-3 py-2 w-20 text-center bg-gray-50">
                       Action
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Serial No
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Document Name
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Document Type
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Category
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Name
+                    </th>
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
+                      Issue Date
                     </th>
                     <th className="px-3 py-2 whitespace-nowrap text-center bg-gray-50">
                       Renewal
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       Renewal Date
                     </th>
-                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50">
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
                       File
+                    </th>
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
+                      Concern Name
+                    </th>
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
+                      Concern Mobile
+                    </th>
+                    <th className="px-3 py-2 whitespace-nowrap bg-gray-50 text-center">
+                      Concern Dept
                     </th>
                   </tr>
                 </thead>
@@ -579,39 +591,46 @@ const AllDocuments = () => {
                           </DropdownMenu.Portal>
                         </DropdownMenu.Root>
                       </td>
-                      <td className="px-3 py-2 flex justify-center items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(item.id)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Edit"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      <td className="px-3 py-2">
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            onClick={() => handleEdit(item.id)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </td>
-                      <td className="px-3 py-2 font-bold text-gray-700 text-xs">
+                      <td className="px-3 py-2 font-bold text-gray-700 text-xs text-center">
                         {item.sn}
                       </td>
-                      <td className="px-3 py-2 text-gray-900 flex items-center gap-2">
-                        <FileText size={16} className="text-gray-400" />
-                        {item.documentName}
+                      <td className="px-3 py-2 text-gray-900">
+                        <div className="flex items-center justify-center gap-2">
+                          {/* <FileText size={16} className="text-gray-400" /> */}
+                          {item.documentName}
+                        </div>
                       </td>
-                      <td className="px-3 py-2 text-gray-600">
+                      <td className="px-3 py-2 text-gray-600 text-center">
                         {item.documentType}
                       </td>
-                      <td className="px-3 py-2 text-gray-600">
+                      <td className="px-3 py-2 text-gray-600 text-center">
                         <span className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">
                           {item.category}
                         </span>
                       </td>
-                      <td className="px-3 py-2 font-medium text-gray-900">
+                      <td className="px-3 py-2 font-medium text-gray-900 text-center">
                         {item.companyName}
+                      </td>
+                      <td className="px-3 py-2 text-gray-700 font-mono text-xs text-center">
+                        {formatDate(item.issueDate)}
                       </td>
                       <td className="px-3 py-2 text-center">
                         {item.needsRenewal ? (
@@ -624,7 +643,7 @@ const AllDocuments = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-3 py-2 text-gray-500 font-mono text-xs">
+                      <td className="px-3 py-2 text-gray-500 font-mono text-xs text-center">
                         {formatDate(item.renewalDate)}
                       </td>
                       <td className="px-3 py-2">
@@ -633,7 +652,7 @@ const AllDocuments = () => {
                             onClick={() =>
                               handleDownload(item.fileContent)
                             }
-                            className="flex items-center gap-2 text-indigo-600 text-xs cursor-pointer hover:underline"
+                            className="flex items-center justify-center gap-2 text-indigo-600 text-xs cursor-pointer hover:underline"
                           >
                             <Download size={14} />
                             <span className="truncate max-w-[100px]">View</span>
@@ -642,11 +661,20 @@ const AllDocuments = () => {
                           <span className="text-gray-400 text-xs">-</span>
                         )}
                       </td>
+                      <td className="px-3 py-2 text-gray-700 text-center">
+                        {item.concernPersonName || "-"}
+                      </td>
+                      <td className="px-3 py-2 text-gray-700 text-center">
+                        {item.concernPersonMobile || "-"}
+                      </td>
+                      <td className="px-3 py-2 text-gray-700 text-center">
+                        {item.concernPersonDepartment || "-"}
+                      </td>
                     </tr>
                   ))}
                   {filteredData.length === 0 && (
                     <tr>
-                      <td colSpan={11} className="p-12 text-center text-gray-500">
+                      <td colSpan={15} className="p-12 text-center text-gray-500">
                         <div className="flex flex-col items-center gap-2">
                           <FileText size={48} className="text-gray-200" />
                           <p>No documents found</p>
@@ -712,6 +740,25 @@ const AllDocuments = () => {
                         {formatDate(item.renewalDate)}
                       </span>
                     )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                    <div>
+                      <span className="text-gray-400 block">Issue Date:</span>
+                      {formatDate(item.issueDate)}
+                    </div>
+                    <div>
+                      <span className="text-gray-400 block">Concern Name:</span>
+                      {item.concernPersonName || "-"}
+                    </div>
+                    <div>
+                      <span className="text-gray-400 block">Mobile:</span>
+                      {item.concernPersonMobile || "-"}
+                    </div>
+                    <div>
+                      <span className="text-gray-400 block">Dept:</span>
+                      {item.concernPersonDepartment || "-"}
+                    </div>
                   </div>
 
                   <div className="pt-3 mt-3 border-t border-gray-50 flex justify-between items-center bg-gray-50/50 -mx-4 -mb-4 px-4 py-3">
