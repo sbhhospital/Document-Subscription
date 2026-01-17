@@ -36,7 +36,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
     const [isSending, setIsSending] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
     const { addShareHistory, shareHistory, documents } = useDataStore();
-    
+
     // Add refs to track initial values
     const initialLoadRef = useRef(true);
     const prevIsOpenRef = useRef(isOpen);
@@ -52,9 +52,9 @@ const ShareModal: React.FC<ShareModalProps> = ({
             setRecipientName('');
             setEmail('');
             setWhatsapp('');
-            
+
             // Only update subject if it's the initial load or documentName has actually changed
-            const shouldUpdateSubject = initialLoadRef.current || 
+            const shouldUpdateSubject = initialLoadRef.current ||
                 (documentName !== prevDocumentNameRef.current && !subject.trim());
 
             if (shouldUpdateSubject) {
@@ -72,18 +72,17 @@ const ShareModal: React.FC<ShareModalProps> = ({
             setIsSending(false);
             initialLoadRef.current = false;
         }
-        
+
         prevIsOpenRef.current = isOpen;
     }, [isOpen]); // Only depend on isOpen
 
     // Handle WhatsApp sharing
     const handleShareWhatsApp = (): void => {
-        const whatsappMessage = generateWhatsAppMessage();
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
-        
+
+
         // Log the WhatsApp sharing activity
         if (isBatch && batchDocuments.length > 0) {
-            batchDocuments.forEach((doc, index) => {
+            batchDocuments.forEach((doc) => {
                 logSharingActivity({
                     recipientName: recipientName,
                     documentName: doc.documentName,
@@ -107,8 +106,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 number: whatsapp
             });
         }
-        
-        window.open(whatsappUrl, '_blank');
+
     };
 
     if (!isOpen || !type) return null;
@@ -196,50 +194,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
         return body;
     };
 
-    const generateWhatsAppMessage = (): string => {
-        let whatsappMessage = '';
-
-        if (isBatch && batchDocuments.length > 0) {
-            whatsappMessage = `📄 *Shared ${batchDocuments.length} Documents*\n\n`;
-
-            batchDocuments.forEach((doc, index) => {
-                whatsappMessage += `*${index + 1}. ${doc.documentName}*\n`;
-                if (doc.sn) whatsappMessage += `📋 Serial No: ${doc.sn}\n`;
-                if (doc.category) whatsappMessage += `🏷️ Category: ${doc.category}\n`;
-                if (doc.companyName) whatsappMessage += `🏢 Company: ${doc.companyName}\n`;
-                if (doc.documentType) whatsappMessage += `📄 Type: ${doc.documentType}\n`;
-                if (doc.renewalDate) {
-                    const date = new Date(doc.renewalDate);
-                    whatsappMessage += `📅 Renewal Date: ${date instanceof Date && !isNaN(date.getTime()) ? date.toLocaleDateString() : doc.renewalDate}\n`;
-                }
-                if (doc.fileContent) whatsappMessage += `🔗 Link: ${doc.fileContent}\n`;
-                whatsappMessage += `\n`;
-            });
-        } else {
-            whatsappMessage = `📄 *Document Shared:* ${documentName}\n\n`;
-
-            if (documentDetails) {
-                if (documentDetails.sn) whatsappMessage += `📋 *Serial No:* ${documentDetails.sn}\n`;
-                if (documentDetails.category) whatsappMessage += `🏷️ *Category:* ${documentDetails.category}\n`;
-                if (documentDetails.companyName) whatsappMessage += `🏢 *Company:* ${documentDetails.companyName}\n`;
-                if (documentDetails.documentType) whatsappMessage += `📄 *Type:* ${documentDetails.documentType}\n`;
-                if (documentDetails.renewalDate) {
-                    const date = new Date(documentDetails.renewalDate);
-                    whatsappMessage += `📅 *Renewal Date:* ${date instanceof Date && !isNaN(date.getTime()) ? date.toLocaleDateString() : documentDetails.renewalDate}\n`;
-                }
-            }
-
-            if (message) {
-                whatsappMessage += `\n💬 *Message:* ${message}\n`;
-            }
-
-            if (fileContent) {
-                whatsappMessage += `\n🔗 *Document Link:* ${fileContent}`;
-            }
-        }
-
-        return whatsappMessage;
-    };
 
     const handleSendEmail = async (): Promise<boolean> => {
         if (!email.trim()) {
@@ -247,14 +201,29 @@ const ShareModal: React.FC<ShareModalProps> = ({
             return false;
         }
 
+        const emailAddresses = email.split(',').map(e => e.trim()).filter(Boolean);
+
+        if (emailAddresses.length === 0) {
+            toast.error('Please enter at least one valid email address');
+            return false;
+        }
+
+        if (emailAddresses.length > 10) {
+            toast.error('You can only send to a maximum of 10 recipients at a time');
+            return false;
+        }
+
         setIsSending(true);
+        let successCount = 0;
+        let failCount = 0;
+
         try {
             const emailBody = generateEmailBody();
             let emailSubject = subject;
-            
+
             // Handle attachment URLs for batch
             let attachmentUrl: string | undefined;
-            
+
             if (isBatch && batchDocuments.length > 0) {
                 // For batch, collect all file contents
                 const allFileContents = batchDocuments
@@ -262,59 +231,51 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     .filter(Boolean)
                     .join(',');
                 attachmentUrl = allFileContents || undefined;
-                
+
                 if (!emailSubject) {
                     emailSubject = `Sharing ${batchDocuments.length} Documents`;
                 }
-                
+            } else {
+                if (!emailSubject) {
+                    emailSubject = `Sharing Document: ${documentName}`;
+                }
+                attachmentUrl = fileContent;
+            }
+
+            // Loop through each email address and send
+            for (const recipientEmail of emailAddresses) {
                 const result = await sendEmailViaGoogleSheets({
-                    to: email,
+                    to: recipientEmail,
                     subject: emailSubject,
                     body: emailBody,
                     isHtml: true,
                     attachmentUrl: attachmentUrl,
-                    documentName: `${batchDocuments.length} Documents`,
-                    recipientName: recipientName,
-                    documentType: batchDocuments[0]?.documentType,
-                    category: batchDocuments[0]?.category,
-                    serialNo: batchDocuments[0]?.sn
+                    documentName: isBatch ? `${batchDocuments.length} Documents` : documentName,
+                    recipientName: recipientName, // Keeps the same recipient name for all
+                    documentType: isBatch ? batchDocuments[0]?.documentType : documentDetails?.documentType,
+                    category: isBatch ? batchDocuments[0]?.category : documentDetails?.category,
+                    serialNo: isBatch ? batchDocuments[0]?.sn : documentDetails?.sn
                 });
 
                 if (result.success) {
-                    setEmailSent(true);
-                    toast.success(`Email with ${batchDocuments.length} documents sent successfully!`);
-                    return true;
+                    successCount++;
                 } else {
-                    toast.error(result.error || 'Failed to send email');
-                    return false;
+                    failCount++;
+                    console.error(`Failed to send to ${recipientEmail}:`, result.error);
                 }
+            }
+
+            if (successCount > 0) {
+                setEmailSent(true);
+                if (failCount === 0) {
+                    toast.success(`Email sent successfully to ${successCount} recipient(s)!`);
+                } else {
+                    toast.success(`Email sent to ${successCount} recipient(s). Failed for ${failCount}.`);
+                }
+                return true;
             } else {
-                // Single document
-                if (!emailSubject) {
-                    emailSubject = `Sharing Document: ${documentName}`;
-                }
-                
-                const result = await sendEmailViaGoogleSheets({
-                    to: email,
-                    subject: emailSubject,
-                    body: emailBody,
-                    isHtml: true,
-                    attachmentUrl: fileContent,
-                    documentName: documentName,
-                    recipientName: recipientName,
-                    documentType: documentDetails?.documentType,
-                    category: documentDetails?.category,
-                    serialNo: documentDetails?.sn
-                });
-
-                if (result.success) {
-                    setEmailSent(true);
-                    toast.success('Email sent successfully!');
-                    return true;
-                } else {
-                    toast.error(result.error || 'Failed to send email');
-                    return false;
-                }
+                toast.error('Failed to send email to any recipients');
+                return false;
             }
         } catch (error) {
             console.error('Email sending error:', error);
@@ -327,10 +288,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        
+
         let emailSuccess = false;
         let whatsappOpened = false;
-        
+
         // Handle email sending if applicable
         if (type === 'email' || type === 'both') {
             emailSuccess = await handleSendEmail();
@@ -338,17 +299,17 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 return;
             }
         }
-        
+
         // Handle WhatsApp if applicable
         if (type === 'whatsapp' || type === 'both') {
             handleShareWhatsApp();
             whatsappOpened = true;
         }
-        
+
         // Add to share history
         if (emailSuccess || whatsappOpened || type === 'whatsapp') {
             const nextId = shareHistory.length + 1;
-            
+
             if (isBatch && batchDocuments.length > 0) {
                 // Add batch share history
                 batchDocuments.forEach((doc, index) => {
@@ -365,7 +326,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                             contactInfo: email
                         });
                     }
-                    
+
                     if (type === 'whatsapp' || type === 'both') {
                         addShareHistory({
                             id: `share-${Date.now()}-${index}-whatsapp`,
@@ -394,7 +355,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                         recipientName: recipientName || 'N/A',
                         contactInfo: email
                     });
-                    
+
                     addShareHistory({
                         id: `share-${Date.now()}-2`,
                         shareNo: `SH-${String(nextId + 1).padStart(3, '0')}`,
@@ -420,7 +381,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     });
                 }
             }
-            
+
             // Close modal after successful sharing
             if ((type === 'email' && emailSuccess) || type === 'whatsapp' || (type === 'both' && (emailSuccess || whatsappOpened))) {
                 setTimeout(() => {
@@ -524,12 +485,12 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                     Email Address
                                 </label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     required={isEmail}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    placeholder="john@example.com"
+                                    placeholder="john@example.com, jane@example.com"
                                     disabled={isSending || emailSent}
                                 />
                             </div>

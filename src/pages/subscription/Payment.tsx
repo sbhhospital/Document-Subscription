@@ -586,6 +586,7 @@ const SubscriptionPayment = () => {
                                         <option value="Credit Card">Credit Card</option>
                                         <option value="Bank Transfer">Bank Transfer</option>
                                         <option value="UPI">UPI</option>
+                                        <option value="Check">Check</option>
                                     </select>
                                 </div>
                                 <div className="col-span-2 sm:col-span-1">
