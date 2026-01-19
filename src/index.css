@@ -21,20 +21,21 @@
   }
 }
 
-/* Hide Scrollbar Completely Globally */
+/* Global Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-  background: transparent;
-  /* make it invisible */
-  display: none;
-  /* safeguard */
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: #c5c5c5;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
